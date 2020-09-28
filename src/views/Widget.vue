@@ -93,7 +93,8 @@
         <div class="form-group form-check acceptCheck margin">
           <input type="checkbox" class="form-check-input" id="isAcceptCheck" @change="$v.isAcceptCheck.$touch()" v-model="isAcceptCheck">
           <label class="form-check-label" for="isAcceptCheck">
-            Согласен с <a href="#" @click="showPolitics">политикой о персональных данных</a> и принимаю <a href="#">оферту</a>
+            Согласен с <a href="#" @click="showPolitics(privacy)">политикой о персональных данных</a> и принимаю 
+            <a href="#" @click="showOffer(offer)">оферту</a>
           </label>
           <div>
             <small v-if="$v.isAcceptCheck.$dirty && $v.isAcceptCheck.$error" class="text-danger">Чтобы продолжить, установите этот флажок</small>
@@ -187,7 +188,7 @@
         </div>
       </div>
     </div>
-    <div v-if="step.finish && item" class="finish">
+    <div v-if="step.finish" class="finish">
       <div class="title row">
         <i class="fa fa-user-plus col-md-2" aria-hidden="true"></i>
         <h4 class="col">Заказ проверки физического лица</h4>
@@ -197,9 +198,9 @@
           <div class="card-header d-flex justify-content-between">
             <div>
               <i class="fa fa-user text-primary" aria-hidden="true"></i>
-              <strong class="text-muted">Заказ принят в работу.</strong>
+              <strong class="text-muted h5">Заказ принят в работу.</strong>
               <div>
-                <strong class="text-muted">Результат проверки будет отправлен на ваш e-mail *{{email}}*</strong>
+                <strong class="text-muted h5">Результат проверки будет отправлен на ваш e-mail *{{email}}*</strong>
               </div>
             </div>
           </div>
@@ -230,15 +231,174 @@
                 <strong class="value">{{inn}}</strong>
               </div>
             </div>
-            <div class="info">
-              <div class="infoBlock">
-                <strong @click="clItem()">Действительность паспорта</strong>
-                <div v-if="item.passport">
-                  <span>В базе недействительных паспортов: не числится</span>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-address-book text-primary" aria-hidden="true"></i><strong>Действительность паспорта</strong>
                 </div>
-                <div v-else>
-                  <span>В базе недействительных паспортов: числится {{item.passportMessage}}</span>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.passport == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.passport">
+                В базе недействительных паспортов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
+              </div>
+              <div class="infoText" v-else>
+                В базе недействительных паспортов: <strong class="text-danger">числится {{item.passportMessage}}</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-search text-primary" aria-hidden="true"></i><strong>Нахождение в розыске</strong>
                 </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.mvdRf == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="!item.mvdRf">
+                В базе данных розыска: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
+              </div>
+              <div class="infoText" v-else>
+                В базе данных розыска: <strong class="text-danger">числится</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-university text-primary" aria-hidden="true"></i><strong>Федиральный реестр сведений о банкротстве</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.reestrBankrotov == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.reestrBankrotov > 0">
+                В реестре Банкротов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствует</strong>
+              </div>
+              <div class="infoText" v-else>
+                В реестре Банкротов: <strong class="text-danger">числится</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-credit-card text-primary" aria-hidden="true"></i><strong>Налоговые задолженности</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.taxes == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.taxes == 0 || !item.taxes">
+                Задолженности <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствуют</strong>
+              </div>
+              <div class="infoText" v-else-if="item.taxes > 0">
+                Найдено задолженностей: <strong class="text-danger">{{item.taxes}}</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-file text-primary" aria-hidden="true"></i><strong>Сведения о долгах у судебных приставов</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.fssp == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.fssp == 0">
+                В базе данных ФССП исполнительные производства <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числятся</strong>
+              </div>
+              <div class="infoText" v-else-if="item.fssp > 0">
+                Найдено записей об ИП: <strong class="text-danger">{{item.fssp}}</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-gavel text-primary" aria-hidden="true"></i><strong>Судебные акты Российской Федерации</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.judge == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.judge == 0">
+                В базе ГАС «Правосудие» совпадения по фамилии и инициалам<br> <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
+              </div>
+              <div class="infoText" v-else-if="item.judge > 0">
+                В базе ГАС «Правосудие» по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" <strong class="text-danger">найдено {{item.judge}} совпадений</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-gavel text-primary" aria-hidden="true"></i><strong>Арбитражные суды</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.arbitr == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.arbitr == 0">
+                В базе арбитражных судов по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" совпадения <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
+              </div>
+              <div class="infoText" v-else-if="item.arbitr > 0">
+                В базе арбитражных судов по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" <strong class="text-danger">найдено {{item.arbitr}} совпадений</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-briefcase text-primary" aria-hidden="true"></i><strong>Самозанятый</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.npdStatus == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.npdStatus == false">
+                В реестре самозанятых <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
+              </div>
+              <div class="infoText" v-else-if="item.npdStatus">
+                В реестре самозанятых <strong class="text-danger">найден</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-user text-primary" aria-hidden="true"></i><strong>Руководитель или учредитель юридического лица</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.founder == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="item.founder == 0">
+                Среди руководителей и учредителей <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не значится</strong>
+              </div>
+              <div class="infoText" v-else-if="item.founder > 0">
+                Найдено задолженностей <strong class="text-danger">{{item.founder}}</strong>
+              </div>
+            </div>
+            <div class="infoBlock">
+              <div class="data d-flex justify-content-between">
+                <div>
+                  <i class="fa fa-exclamation-triangle text-primary" aria-hidden="true"></i><strong>Росфинмониторинг</strong>
+                </div>
+                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
+              </div>
+              <div class="infoText text-muted" v-if="item.rosfinmonitoring == 'process'">
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+              </div>
+              <div class="infoText" v-else-if="!item.rosfinmonitoring">
+                В перечне о причастности к экстремистской деятельности<br>или терроризму:<strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найден</strong>
+              </div>
+              <div class="infoText" v-else-if="item.rosfinmonitoring">
+                В перечне о причастности к экстремистской деятельности<br>или терроризму:<strong class="text-danger">найден</strong>
               </div>
             </div>
           </div>
@@ -251,6 +411,7 @@
 <script>
   import Vue from 'vue'
   import Politics from '@/components/Politics.vue';
+  import Offer from '@/components/Offer.vue';
   import axios from 'axios'
   import {TheMask} from 'vue-the-mask'
   import flatPickr from 'vue-flatpickr-component';
@@ -264,7 +425,8 @@
     components: {
       Politics,
       TheMask,
-      flatPickr
+      flatPickr,
+      Offer
     },
     data() {
       return {
@@ -637,15 +799,16 @@
           maxDate: new Date()
         },
         order: {},
-        item: true,
+        token: "",
+        item: false,
         upldateClientData: function() {
-          const token = this.order.jwt.token;
+          const token = this.token;
           const orderItemsId = this.order.orderItemsId;
           const seriesAndNumber = this.seriesAndNumber;
 
           axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': 'Bearer ' + token
               }
             })
               .then(response => {
@@ -654,38 +817,67 @@
                 let item = {}
 
                 if (seriesAndNumber) {
-                  if (data.owner.passport) {
+                  if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
+                    item.passport = "process"
+                  else if (data.owner.passport) {
                     if (data.owner.passport.valid.status) {
                       item.passport = true;
                     } else {
-                      item.passport = false;
+                      item.passport = false;  
                       item.passportMessage = data.owner.passport.valid.message;
                     }
                   } else {
                     item.passport = false;
                   }
                 }
-                if (data.mvdRf.found)
+
+                if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
+                  item.mvdRf = "process"
+                else if (data.mvdRf.found)
                   item.mvdRf = true;
-                if (Number(data.reestrBankrotov.totalCount) > 0)
+
+                if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
+                  item.reestrBankrotov = "process"
+                else if (Number(data.reestrBankrotov.totalCount) > 0)
                   item.reestrBankrotov = true
                 else
                   item.reestrBankrotov = false
-                if (data.owner.taxes.totalCount)
+
+                if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
+                  item.taxes = "process"
+                else if (data.owner.taxes.totalCount)
                   item.taxes = Number(data.owner.taxes.totalCount)
-                if (data.fssp.totalCount)
+
+                if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
+                  item.fssp = "process"
+                else if (data.fssp.totalCount)
                   item.fssp = Number(data.fssp.totalCount)
-                if (data.judge.totalCount)
+
+                if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
+                  item.judge = "process"
+                else if (data.judge.totalCount)
                   item.judge = Number(data.judge.totalCount)
-                if (data.arbitr.totalCount)
+
+                if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
+                  item.arbitr = "process"
+                else if (data.arbitr.totalCount)
                   item.arbitr = Number(data.arbitr.totalCount)
-                if (data.owner.npdStatus.status) 
+
+                if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
+                  item.npdStatus = "process"
+                else if (data.owner.npdStatus.status) 
                   item.npdStatus = true;
                 else 
                   item.npdStatus = false;
-                if (data.owner.founder.totalCount)
+
+                if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
+                  item.founder = "process"
+                else if (data.owner.founder.totalCount)
                   item.founder = Number(data.owner.founder.totalCount)
-                if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+
+                if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
+                  item.rosfinmonitoring = "process"
+                else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
                   item.rosfinmonitoring = true;
                 else 
                   item.rosfinmonitoring = false;
@@ -698,7 +890,7 @@
               window.setInterval(function () {
                 axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
                   headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': 'Bearer ' + token
                     }
                   })
                     .then(response => {
@@ -706,53 +898,82 @@
 
                       let item = {}
 
-                      console.log(1)
-
                       if (seriesAndNumber) {
-                        if (data.owner.passport) {
+                        if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
+                          item.passport = "process"
+                        else if (data.owner.passport) {
                           if (data.owner.passport.valid.status) {
                             item.passport = true;
                           } else {
-                            item.passport = false;
+                            item.passport = false;  
                             item.passportMessage = data.owner.passport.valid.message;
                           }
-                        } else
+                        } else {
                           item.passport = false;
+                        }
                       }
-                      if (data.mvdRf.found)
+
+                      if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
+                        item.mvdRf = "process"
+                      else if (data.mvdRf.found)
                         item.mvdRf = true;
-                      if (Number(data.reestrBankrotov.totalCount) > 0)
+
+                      if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
+                        item.reestrBankrotov = "process"
+                      else if (Number(data.reestrBankrotov.totalCount) > 0)
                         item.reestrBankrotov = true
                       else
                         item.reestrBankrotov = false
-                      if (data.owner.taxes.totalCount)
+
+                      if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
+                        item.taxes = "process"
+                      else if (data.owner.taxes.totalCount)
                         item.taxes = Number(data.owner.taxes.totalCount)
-                      if (data.fssp.totalCount)
+
+                      if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
+                        item.fssp = "process"
+                      else if (data.fssp.totalCount)
                         item.fssp = Number(data.fssp.totalCount)
-                      if (data.judge.totalCount)
+
+                      if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
+                        item.judge = "process"
+                      else if (data.judge.totalCount)
                         item.judge = Number(data.judge.totalCount)
-                      if (data.arbitr.totalCount)
+
+                      if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
+                        item.arbitr = "process"
+                      else if (data.arbitr.totalCount)
                         item.arbitr = Number(data.arbitr.totalCount)
-                      if (data.owner.npdStatus.status) 
+
+                      if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
+                        item.npdStatus = "process"
+                      else if (data.owner.npdStatus.status) 
                         item.npdStatus = true;
                       else 
                         item.npdStatus = false;
-                      if (data.owner.founder.totalCount)
+
+                      if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
+                        item.founder = "process"
+                      else if (data.owner.founder.totalCount)
                         item.founder = Number(data.owner.founder.totalCount)
-                      if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+
+                      if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
+                        item.rosfinmonitoring = "process"
+                      else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
                         item.rosfinmonitoring = true;
                       else 
                         item.rosfinmonitoring = false;
 
                       resolve(item);
                     });
-              },3000);
+              },10000);
             });
 
             promise
               .then(
                 result => {
                   this.item = result;
+                  this.$forceUpdate()
                 },
                 error => {
                   console.log(error)
@@ -817,12 +1038,15 @@
     methods: {
       showPolitics() {
         this.$modal.show(
-          Politics, 
-          {},
-          {
+          Politics, {}, {
             height: '760px'
-          }
-        )
+        })
+      },
+      showOffer() {
+        this.$modal.show(
+          Offer, {}, {
+            height: '760px'
+        })
       },
       submitFillingForm() {
         if (this.$v.$invalid) {
@@ -880,23 +1104,11 @@
               jwt: response.data.jwt
             }
 
+            this.token = response.data.jwt.token;
+
             const order = this.order;
 
             var widget = new cp.CloudPayments();
-
-            const userInfo = [{
-              order_item_id: this.order.orderItemsId,
-              first: this.name,
-              surname: this.surname,
-              ownerType: 1,
-              birthday: new Date(this.birthDateFormat).toISOString(),
-              region: this.region.id,
-            }];
-
-            if (this.seriesAndNumber)
-                userInfo[0].passport = this.seriesAndNumber;
-            if (this.patronymic)
-              userInfo[0].patronymic = this.patronymic
 
             let promise = new Promise(function(resolve, reject) {
               widget.charge({ 
@@ -912,15 +1124,7 @@
                 }
               },
               function(options) { // success
-                console.log(userInfo)
-
-                axios.post('https://api-test.realtycloud.ru/risk/owner', JSON.stringify(userInfo))
-                  .then((res) => {
-                    resolve({finish: true})
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
+                resolve({finish: true})
               },
               function (reason, options) { // fail
                 resolve(false)
@@ -930,10 +1134,30 @@
             promise
               .then(
                 result => {
-                  if (result)
-                    this.step = result;
-                    this.upldateClientData()
-                    return
+                  const userInfo = [{
+                    order_item_id: this.order.orderItemsId,
+                    first: this.name,
+                    surname: this.surname,
+                    ownerType: 1,
+                    birthday: new Date(this.birthDateFormat).toISOString(),
+                    region: this.region.id,
+                  }];
+
+                  if (this.seriesAndNumber)
+                      userInfo[0].passport = this.seriesAndNumber;
+                  if (this.patronymic)
+                    userInfo[0].patronymic = this.patronymic
+
+                  axios.post('https://api-test.realtycloud.ru/risk/owner', JSON.stringify(userInfo))
+                    .then((res) => {
+                      this.step = result;
+                      this.upldateClientData()
+                      return
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      return
+                    });
                   return
                 },
                 error => {
@@ -944,9 +1168,6 @@
           .catch((error) => {
             console.log(error);
           });
-      },
-      clItem() {
-        console.log(this.item)
       }
     }
   }
@@ -991,6 +1212,9 @@
     width: 360px;
     background-color: #293fcc;
     margin: 0 auto;
+    h4 {
+      padding-top: 0px;
+    }
     form {
       padding: 15px;
       label, a {  
@@ -1034,10 +1258,28 @@
   .info {
     margin-bottom: 7px;
     margin-left: 15px;
-    .infoBlock {
-      .label {
-        color: #6c757d;
-        font-size: 14px;
+  }
+  .infoBlock {
+    margin-bottom: 14px;
+    img {
+      margin-left: 7px;
+    }
+    .data {
+      i {
+        font-size: 15px;
+        width: 14px;
+      }
+    }
+    .infoText {
+      padding-left: 30px;
+    }
+    .label {
+      color: #6c757d;
+      font-size: 14px;
+    }
+    strong {
+      i {
+        font-size: 13px;
       }
     }
   }
@@ -1090,7 +1332,10 @@
     }
     .data {
       i {
-        margin-right: 12px;
+        margin-right: 16px;
+      }
+      .fa-info-circle {
+        font-size: 13px;
       }
     }
     .fio {
