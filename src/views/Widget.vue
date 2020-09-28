@@ -53,262 +53,6 @@
             <option v-for="reg in regions" :key="reg.i" :value="{id: reg.id, region: reg.region}">
               {{reg.region}}
             </option>
-            
-            <!-- <option>
-              Алтайский край
-            </option>
-            <option>
-              Амурская область
-            </option>
-            <option>
-              Архангельская область
-            </option>
-            <option>
-              Астраханская область
-            </option>
-            <option>
-              Белгородская область
-            </option>
-            <option>
-              Брянская область
-            </option>
-            <option>
-              Владимирская область
-            </option>
-            <option>
-              Волгоградская область
-            </option>
-            <option>
-              Вологодская область
-            </option>
-            <option>
-              Воронежская область
-            </option>
-            <option>
-              г. Москва
-            </option>
-            <option>
-              Еврейская автономная область
-            </option>
-            <option>
-              Забайкальский край
-            </option>
-            <option>
-              Ивановская область
-            </option>
-            <option>
-              Иркутская область
-            </option>
-            <option>
-              Кабардино-Балкарская Республика
-            </option>
-            <option>
-              Калининградская область
-            </option>
-            <option>
-              Калужская область
-            </option>
-            <option>
-              Камчатский край
-            </option>
-            <option>
-              Карачаево-Черкесская Республика
-            </option>
-            <option>
-              Кемеровская область
-            </option>
-            <option>
-              Кировская область
-            </option>
-            <option>
-              Костромская область
-            </option>
-            <option>
-              Краснодарский край
-            </option>
-            <option>
-              Красноярский край
-            </option>
-            <option>
-              Курганская область
-            </option>
-            <option>
-              Курская область
-            </option>
-            <option>
-              Ленинградская область
-            </option>
-            <option>
-              Липецкая область
-            </option>
-            <option>
-              Магаданская область
-            </option>
-            <option>
-              Московская область
-            </option>
-            <option>
-              Мурманская область
-            </option>
-            <option>
-              Ненецкий автономный округ
-            </option>
-            <option>
-              Нижегородская область
-            </option>
-            <option>
-              Новгородская область
-            </option>
-            <option>
-              Новосибирская область
-            </option>
-            <option>
-              Омская область
-            </option>
-            <option>
-              Оренбургская область
-            </option>
-            <option>
-              Орловская область
-            </option>
-            <option>
-              Пензенская область
-            </option>
-            <option>
-              Пермский край
-            </option>
-            <option>
-              Приморский край
-            </option>
-            <option>
-              Псковская область
-            </option>
-            <option>
-              Республика Адыгея (Адыгея)
-            </option>
-            <option>
-              Республика Алтай
-            </option>
-            <option>
-              Республика Башкортостан
-            </option>
-            <option>
-              Республика Бурятия
-            </option>
-            <option>
-              Республика Дагестан
-            </option>
-            <option>
-              Республика Ингушетия
-            </option>
-            <option>
-              Республика Калмыкия
-            </option>
-            <option>
-              Республика Карелия
-            </option>
-            <option>
-              Республика Коми
-            </option>
-            <option>
-              Республика Крым
-            </option>
-            <option>
-              Республика Марий Эл
-            </option>
-            <option>
-              Республика Мордовия
-            </option>
-            <option>
-              Республика Саха (Якутия)
-            </option>
-            <option>
-              Республика Северная Осетия - Алания
-            </option>
-            <option>
-              Республика Татарстан (Татарстан)
-            </option>
-            <option>
-              Республика Тыва
-            </option>
-            <option>
-              Республика Хакасия
-            </option>
-            <option>
-              Ростовская область
-            </option>
-            <option>
-              Рязанская область
-            </option>
-            <option>
-              Самарская область
-            </option>
-            <option>
-              Санкт-Петербург
-            </option>
-            <option>
-              Саратовская область
-            </option>
-            <option>
-              Сахалинская область
-            </option>
-            <option>
-              Свердловская область
-            </option>
-            <option>
-              Севастополь
-            </option>
-            <option>
-              Смоленская область
-            </option>
-            <option>
-              Ставропольский край
-            </option>
-            <option>
-              Тамбовская область
-            </option>
-            <option>
-              Тверская область
-            </option>
-            <option>
-              Томская область
-            </option>
-            <option>
-              Тульская область
-            </option>
-            <option>
-              Тюменская область
-            </option>
-            <option>
-              Удмуртская Республика
-            </option>
-            <option>
-              Ульяновская область
-            </option>
-            <option>
-              Хабаровский край
-            </option>
-            <option>
-              Ханты-Мансийский автономный округ - Югра
-            </option>
-            <option>
-              Челябинская область
-            </option>
-            <option>
-              Чеченская Республика
-            </option>
-            <option>
-              Чувашская Республика - Чувашия
-            </option>
-            <option>
-              Чукотский автономный округ
-            </option>
-            <option>
-              Ямало-Ненецкий автономный округ
-            </option>
-            <option>
-              Ярославская область
-            </option> -->
           </select>
           <small v-if="($v.region.$dirty && !$v.region.required) || ($v.region.$dirty && $v.region.$error)" class="text-danger">Выбирете регион</small>
         </div>
@@ -443,7 +187,7 @@
         </div>
       </div>
     </div>
-    <div v-show="step.finish" class="finish">
+    <div v-if="step.finish && item" class="finish">
       <div class="title row">
         <i class="fa fa-user-plus col-md-2" aria-hidden="true"></i>
         <h4 class="col">Заказ проверки физического лица</h4>
@@ -486,6 +230,17 @@
                 <strong class="value">{{inn}}</strong>
               </div>
             </div>
+            <div class="info">
+              <div class="infoBlock">
+                <strong @click="clItem()">Действительность паспорта</strong>
+                <div v-if="item.passport">
+                  <span>В базе недействительных паспортов: не числится</span>
+                </div>
+                <div v-else>
+                  <span>В базе недействительных паспортов: числится {{item.passportMessage}}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -516,6 +271,7 @@
         step: {
           fillingForm: true,
           // ordering: true
+          // finish: true
         },
         regions: [
           {
@@ -880,7 +636,130 @@
           dateFormat: "d.m.Y",
           maxDate: new Date()
         },
-        order: {}
+        order: {},
+        item: true,
+        upldateClientData: function() {
+          const token = this.order.jwt.token;
+          const orderItemsId = this.order.orderItemsId;
+          const seriesAndNumber = this.seriesAndNumber;
+
+          axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+              }
+            })
+              .then(response => {
+                let data = response.data.data.owners[0]
+
+                let item = {}
+
+                if (seriesAndNumber) {
+                  if (data.owner.passport) {
+                    if (data.owner.passport.valid.status) {
+                      item.passport = true;
+                    } else {
+                      item.passport = false;
+                      item.passportMessage = data.owner.passport.valid.message;
+                    }
+                  } else {
+                    item.passport = false;
+                  }
+                }
+                if (data.mvdRf.found)
+                  item.mvdRf = true;
+                if (Number(data.reestrBankrotov.totalCount) > 0)
+                  item.reestrBankrotov = true
+                else
+                  item.reestrBankrotov = false
+                if (data.owner.taxes.totalCount)
+                  item.taxes = Number(data.owner.taxes.totalCount)
+                if (data.fssp.totalCount)
+                  item.fssp = Number(data.fssp.totalCount)
+                if (data.judge.totalCount)
+                  item.judge = Number(data.judge.totalCount)
+                if (data.arbitr.totalCount)
+                  item.arbitr = Number(data.arbitr.totalCount)
+                if (data.owner.npdStatus.status) 
+                  item.npdStatus = true;
+                else 
+                  item.npdStatus = false;
+                if (data.owner.founder.totalCount)
+                  item.founder = Number(data.owner.founder.totalCount)
+                if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+                  item.rosfinmonitoring = true;
+                else 
+                  item.rosfinmonitoring = false;
+
+                this.item = item;
+              });
+
+          this.$nextTick(function () {
+            let promise = new Promise(function(resolve, reject) {
+              window.setInterval(function () {
+                axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                    }
+                  })
+                    .then(response => {
+                      let data = response.data.data.owners[0]
+
+                      let item = {}
+
+                      console.log(1)
+
+                      if (seriesAndNumber) {
+                        if (data.owner.passport) {
+                          if (data.owner.passport.valid.status) {
+                            item.passport = true;
+                          } else {
+                            item.passport = false;
+                            item.passportMessage = data.owner.passport.valid.message;
+                          }
+                        } else
+                          item.passport = false;
+                      }
+                      if (data.mvdRf.found)
+                        item.mvdRf = true;
+                      if (Number(data.reestrBankrotov.totalCount) > 0)
+                        item.reestrBankrotov = true
+                      else
+                        item.reestrBankrotov = false
+                      if (data.owner.taxes.totalCount)
+                        item.taxes = Number(data.owner.taxes.totalCount)
+                      if (data.fssp.totalCount)
+                        item.fssp = Number(data.fssp.totalCount)
+                      if (data.judge.totalCount)
+                        item.judge = Number(data.judge.totalCount)
+                      if (data.arbitr.totalCount)
+                        item.arbitr = Number(data.arbitr.totalCount)
+                      if (data.owner.npdStatus.status) 
+                        item.npdStatus = true;
+                      else 
+                        item.npdStatus = false;
+                      if (data.owner.founder.totalCount)
+                        item.founder = Number(data.owner.founder.totalCount)
+                      if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+                        item.rosfinmonitoring = true;
+                      else 
+                        item.rosfinmonitoring = false;
+
+                      resolve(item);
+                    });
+              },3000);
+            });
+
+            promise
+              .then(
+                result => {
+                  this.item = result;
+                },
+                error => {
+                  console.log(error)
+                }
+              );
+          })
+        }
       }
     },
     validations() {
@@ -960,7 +839,7 @@
         }
 
         axios
-          .get('https://api.realtycloud.ru/products')
+          .get('https://api-test.realtycloud.ru/products')
           .then(response => {
             let data = response.data.data
 
@@ -990,74 +869,84 @@
           ]
         })
 
-        const headers = {
-          'Content-Type': 'application/json',
-          'API-Key': '9PQ5A-NUX15-T1T2B-9D2VO'
-        }
-
-        axios.post('https://api.realtycloud.ru/order', request, {
-          headers: headers
-        })
+        axios.post('https://api-test.realtycloud.ru/regorder', request)
           .then((response) => {
             const data = response.data.data
-            console.log(data)
+
             this.order = {
-              id: data.id,
-              total_amount: data.total_amount,
-              orderItemsId: data.order_items[0].order_item_id,
-              // jwtToken: response.jwt
+              id: data.order.id,
+              total_amount: data.order.total_amount,
+              orderItemsId: data.order.order_items[0].order_item_id,
+              jwt: response.data.jwt
             }
+
+            const order = this.order;
 
             var widget = new cp.CloudPayments();
 
-            // widget.charge({ 
-            //   publicId: data.order_items[0].product_id,  //id из личного кабинета мы вам его предоставим
-            //   description: 'Проверка собственников', // описание, показывается при открытии виджета 
-            //   amount: Number(1000), //сумма (ОБЯЗАТЕЛЬНО)
-            //   currency: 'RUB', // валюта
-            //   invoiceId: this.order.id, // номер заказа  (ОБЯЗАТЕЛЬНО)
-            //   accountId: 'user@example.com', //идентификатор плательщика (ОБЯЗАТЕЛЬНО)
-            //   skin: "mini", //дизайн виджета
-            //   data: {
-            //     userId: '8a1b775b' // (ОБЯЗАТЕЛЬНО)
-            //   }
-            // },
-            // function (options) { // success
-            //   //действие при успешной оплате
-            // },
-            // function (reason, options) { // fail
-            //   //действие при неуспешной оплате
-            // });
-
             const userInfo = [{
-              id: "",
+              order_item_id: this.order.orderItemsId,
               first: this.name,
               surname: this.surname,
               ownerType: 1,
-              birthday: this.birthDateFormat,
+              birthday: new Date(this.birthDateFormat).toISOString(),
               region: this.region.id,
-              passport: this.seriesAndNumber
             }];
 
+            if (this.seriesAndNumber)
+                userInfo[0].passport = this.seriesAndNumber;
             if (this.patronymic)
               userInfo[0].patronymic = this.patronymic
 
-            axios.post('https://api.realtycloud.ru/risk/owner', JSON.stringify(userInfo), {
-              headers: headers
-            })
-              .then((res) => {
-                console.log(res)
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+            let promise = new Promise(function(resolve, reject) {
+              widget.charge({ 
+                publicId: 'pk_5d2c1524cbcc49a9bb3e883524eca',
+                description: 'Проверка собственников',
+                amount: Number(order.total_amount),
+                currency: 'RUB',
+                invoiceId: order.id,
+                accountId: order.jwt.person.email,
+                skin: "mini",
+                data: {
+                  userId: order.jwt.id
+                }
+              },
+              function(options) { // success
+                console.log(userInfo)
 
+                axios.post('https://api-test.realtycloud.ru/risk/owner', JSON.stringify(userInfo))
+                  .then((res) => {
+                    resolve({finish: true})
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              },
+              function (reason, options) { // fail
+                resolve(false)
+              });
+            });
+
+            promise
+              .then(
+                result => {
+                  if (result)
+                    this.step = result;
+                    this.upldateClientData()
+                    return
+                  return
+                },
+                error => {
+                  console.log(error)
+                }
+              );
           })
           .catch((error) => {
             console.log(error);
           });
-
-        
+      },
+      clItem() {
+        console.log(this.item)
       }
     }
   }
