@@ -8,7 +8,7 @@
             <div>
               <i class="fa fa-user text-primary" aria-hidden="true"></i>
               <strong class="text-muted">Заказ принят в работу.</strong>
-              <div> {{item.e}}
+              <div>
                 <strong class="text-muted">Результат проверки будет отправлен на ваш e-mail *{{userData.email}}*</strong>
               </div>
             </div>
@@ -250,106 +250,88 @@
         let th = this;
 
         this.$nextTick(function () {
-          let promise = new Promise(function(resolve, reject) {
-            window.setInterval(function () {
-
-              axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
-                headers: {
-                  'Authorization': 'Bearer ' + token
-                  }
-                })
-                .then(response => {
-                  let data = response.data.data.owners[0]
-
-                  let item = {}
-                  
-                  if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
-                    item.passport = "process"
-                  else if (data.owner.passport.valid.status == true) {
-                    item.passport = true;
-                  } else {
-                    item.passport = false;  
-                    item.passportMessage = data.owner.passport.valid.message;
-                  }
-
-
-                  if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
-                    item.mvdRf = "process"
-                  else if (data.mvdRf.found == true)
-                    item.mvdRf = false;
-                  else if (data.mvdRf.found == false)
-                    item.mvdRf = true;
-
-
-                  if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
-                    item.reestrBankrotov = "process"
-                  else if (data.reestrBankrotov.totalCount > 0)
-                    item.reestrBankrotov = true
-                  else (data.reestrBankrotov.totalCount == 0)
-                    item.reestrBankrotov = false
-
-                  if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
-                    item.taxes = "process"
-                  else if (data.owner.taxes.totalCount)
-                    item.taxes = data.owner.taxes.totalCount
-
-                  if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
-                    item.fssp = "process"
-                  else if (data.fssp.totalCount)
-                    item.fssp = data.fssp.totalCount
-
-                  if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
-                    item.judge = "process"
-                  else if (data.judge.totalCount)
-                    item.judge = data.judge.totalCount
-
-                  if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
-                    item.arbitr = "process"
-                  else if (data.arbitr.totalCount)
-                    item.arbitr = data.arbitr.totalCount
-
-                  if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
-                    item.npdStatus = "process"
-                  else if (data.owner.npdStatus.status == true) 
-                    item.npdStatus = false;
-                  else 
-                    item.npdStatus = true;
-
-                  if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
-                    item.founder = "process"
-                  else if (data.owner.founder.totalCount)
-                    item.founder = data.owner.founder.totalCount
-
-                  if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
-                    item.rosfinmonitoring = "process"
-                  else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
-                    item.rosfinmonitoring = false;
-                  else 
-                    item.rosfinmonitoring = true; 
-
-                  th.item = item;
-
-                  resolve(item);
-                });
-            },3000);
-          });
-
-          promise
-            .then(
-              result => {
-                if (result) {
-                  // this.item = result;
-                  // this.key = this.key + 1;
+          window.setInterval(function () {
+            axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
+              headers: {
+                'Authorization': 'Bearer ' + token
                 }
-              },
-              error => {
-                console.log(error)
+            })
+            .then(response => {
+              let data = response.data.data.owners[0]
+
+              let item = {}
+              
+              if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
+                item.passport = "process"
+              else if (data.owner.passport.valid.status == true) {
+                item.passport = true;
+              } else {
+                item.passport = false;  
+                item.passportMessage = data.owner.passport.valid.message;
               }
-            );
-          }) 
-        }
-      } 
+
+
+              if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
+                item.mvdRf = "process"
+              else if (data.mvdRf.found == true)
+                item.mvdRf = false;
+              else if (data.mvdRf.found == false)
+                item.mvdRf = true;
+
+
+              if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
+                item.reestrBankrotov = "process"
+              else if (data.reestrBankrotov.totalCount > 0)
+                item.reestrBankrotov = true
+              else (data.reestrBankrotov.totalCount == 0)
+                item.reestrBankrotov = false
+
+              if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
+                item.taxes = "process"
+              else if (data.owner.taxes.totalCount)
+                item.taxes = data.owner.taxes.totalCount
+
+              if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
+                item.fssp = "process"
+              else if (data.fssp.totalCount)
+                item.fssp = data.fssp.totalCount
+
+              if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
+                item.judge = "process"
+              else if (data.judge.totalCount)
+                item.judge = data.judge.totalCount
+
+              if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
+                item.arbitr = "process"
+              else if (data.arbitr.totalCount)
+                item.arbitr = data.arbitr.totalCount
+
+              if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
+                item.npdStatus = "process"
+              else if (data.owner.npdStatus.status == true) 
+                item.npdStatus = false;
+              else 
+                item.npdStatus = true;
+
+              if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
+                item.founder = "process"
+              else if (data.owner.founder.totalCount)
+                item.founder = data.owner.founder.totalCount
+
+              if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
+                item.rosfinmonitoring = "process"
+              else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+                item.rosfinmonitoring = false;
+              else 
+                item.rosfinmonitoring = true; 
+
+              th.item = item;
+            });
+          },3000);
+        });
+      }   
     }
+  }
 </script>
 
 <style lang="scss" scoped>
