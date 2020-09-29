@@ -1,1346 +1,188 @@
 <template>
   <section>
-    <div v-show="step.fillingForm" class="fillingForm">
-      <div class="title row">
-        <i class="fa fa-user-plus col-md-3" aria-hidden="true"></i>
-        <h4 class="col">Проверка физического лица</h4>
-      </div>
-      <form @submit.prevent="submitFillingForm()">
-        <div class="margin">
-          <div class="input-group">
-            <input class="form-control inputIcon" 
-              :class="{'border-danger': $v.surname.$dirty && !$v.surname.required}" 
-              type="text" 
-              name="surname" 
-              placeholder="Фамилия" 
-              v-model="surname">
-            <div class="input-group-prepend">
-              <span class="input-group-text" :class="{'border-danger': $v.surname.$dirty && !$v.surname.required}"><i class="fa fa-address-card" aria-hidden="true"></i></span> 
-            </div>
-          </div>
-          <small v-if="$v.surname.$dirty && !$v.surname.required" class="text-danger">Ообязательное поле</small>
-        </div>
-        <div class="margin">
-          <input class="form-control" 
-            :class="{'border-danger': $v.name.$dirty && !$v.name.required}" 
-            type="text" 
-            name="name" 
-            placeholder="Имя" 
-            v-model="name">
-          <small v-if="$v.name.$dirty && !$v.name.required" class="text-danger">Ообязательное поле</small>
-        </div>
-        <div class="margin">
-          <input class="form-control" type="text" name="patronymic" placeholder="Отчество" v-model="patronymic">
-        </div>
-        <div class="margin inputDate">
-          <flat-pickr name="birthDate" 
-            :class="{'border-danger': $v.birthDate.$dirty && !$v.birthDate.required}"
-            :config="formDateConfig" 
-            v-model="birthDate" 
-            placeholder="Дата рождения" 
-            class="form-control"></flat-pickr>
-          <small v-if="$v.birthDate.$dirty && !$v.birthDate.required" class="text-danger">Ообязательное поле</small>
-        </div>
-        <div class="margin">
-          <select name="region"
-            :class="{'border-danger': ($v.region.$dirty && !$v.region.required) || ($v.region.$dirty && $v.region.$error)}"
-            class="form-control" 
-            v-model="region"
-            @change="$v.region.$touch()">
-            <option>
-              Регион проживания
-            </option>
-            <option v-for="reg in regions" :key="reg.i" :value="{id: reg.id, region: reg.region}">
-              {{reg.region}}
-            </option>
-          </select>
-          <small v-if="($v.region.$dirty && !$v.region.required) || ($v.region.$dirty && $v.region.$error)" class="text-danger">Выбирете регион</small>
-        </div>
-        <div class="form-group form-check margin">
-          <input type="checkbox" class="form-check-input" id="isPassportData" v-model="passChecked">
-          <label class="form-check-label" for="isPassportData">Паспортные данные</label>
-        </div>
-        <div class="form-group" v-if="passChecked">
-          <div class="margin">
-            <div class="input-group">
-              <input class="form-control inputIcon"
-                :class="{'border-danger': ($v.seriesAndNumber.$dirty && !$v.seriesAndNumber.required) || ($v.seriesAndNumber.$dirty && $v.seriesAndNumber.$error)}"
-                type="text" name="seriesAndNumber" 
-                v-mask="'## ## ######'" 
-                placeholder="Серия и номер паспорта" 
-                v-model="seriesAndNumber">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-lock" aria-hidden="true"></i></span>
-              </div>
-            </div>
-            <small v-if="($v.seriesAndNumber.$dirty && !$v.seriesAndNumber.required) || ($v.seriesAndNumber.$dirty && $v.seriesAndNumber.$error)" class="text-danger">Ообязательное поле</small>
-          </div>
-          <div class="margin inputDate">
-            <div class="input-group">
-              <flat-pickr name="issueDate"
-                :class="{'border-danger': $v.issueDate.$dirty && !$v.issueDate.required}"
-                :config="formDateConfig" 
-                v-model="issueDate" 
-                placeholder="Дата выдачи" 
-                class="form-control inputIcon"></flat-pickr>
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-lock" aria-hidden="true"></i></span>
-              </div>
-            </div>
-            <small v-if="$v.issueDate.$dirty && !$v.issueDate.required" class="text-danger">Ообязательное поле</small>
-          </div>
-        </div>
-        <div class="form-group form-check acceptCheck margin">
-          <input type="checkbox" class="form-check-input" id="isAcceptCheck" @change="$v.isAcceptCheck.$touch()" v-model="isAcceptCheck">
-          <label class="form-check-label" for="isAcceptCheck">
-            Согласен с <a href="#" @click="showPolitics(privacy)">политикой о персональных данных</a> и принимаю 
-            <a href="#" @click="showOffer(offer)">оферту</a>
-          </label>
-          <div>
-            <small v-if="$v.isAcceptCheck.$dirty && $v.isAcceptCheck.$error" class="text-danger">Чтобы продолжить, установите этот флажок</small>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary form-control">НАЧАТЬ ПРОВЕРКУ</button>
-      </form>
-    </div>
-    <div v-show="step.ordering" class="ordering">
-      <div class="title row">
-        <i class="fa fa-user-plus col-md-2" aria-hidden="true"></i>
-        <h4 class="col">Заказ проверки физического лица</h4>
-      </div>
-      <div class="body border rounded-bottom">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between">
-            <div>
-              <i class="fa fa-user text-primary" aria-hidden="true"></i>
-              <strong>Проверка введенных данных</strong>
-            </div>
-            <div>
-              <i class="fa fa-info-circle text-primary" 
-                title="Проверка осуществляется из открытых источников на основании введенных пользователем данных" 
-                v-tippy="{ arrow: true, size: 'small' }" 
-                aria-hidden="true"></i>
-            </div>
-          </div>
-          <div class="list-group-item">
-            <div class="fio">
-              <i class="fa fa-address-card text-primary" aria-hidden="true"></i><strong>{{surname}} {{name}} {{patronymic}}</strong>
-            </div>
-            <div class="info row">
-              <div class="infoBlock col-md-6">
-                <div class="label">Дата рождения</div>
-                <strong class="value">{{birthDate}}</strong>
-              </div>
-              <div class="infoBlock col-md-6">
-                <div class="label">Регион</div>
-                <strong class="value">{{region.region}}</strong>
-              </div>
-            </div>
-            <div v-show="passChecked" class="info row">
-              <div class="infoBlock col-md-6">
-                <div class="label">Паспорт</div>
-                <strong class="value">{{seriesAndNumber}}</strong>
-              </div>
-              <div class="infoBlock col-md-6">
-                <div class="label">Дата выдачи</div>
-                <strong class="value">{{issueDate}}</strong>
-              </div>
-            </div>
-            <div class="mail" @submit.prevent="addOrdering()">
-              <form>
-                <label for="email">Рузультат проверки будет отправлен вам на E-mail в течении 10 минут<i class="fa fa-info-circle"
-                  aria-hidden="true"
-                  title="Отчет формируется за 10 минут, но иногда проверка может осуществляться в течение 1 рабочего дня" 
-                  v-tippy="{ arrow: true, size: 'small' }"></i></label>
-                <input type="email" 
-                  :class="{'border-danger': emailErr}"
-                  class="form-control" 
-                  id="email" 
-                  v-model="email" 
-                  placeholder="E-mail для получения документа">
-                <small v-if="emailErr" class="text-danger">Ообязательное поле</small>
-                <div class="text-center">
-                  <button class="btn btn-primary" type="sumbmit">ПОДТВЕРДИТЬ ЗАКАЗ 349 РУБ.</button>
-                </div>
-              </form>
-            </div>
-            <footer class="row">
-              <div class="col text-center">
-                <div>
-                  <i class="fa fa-file text-primary" aria-hidden="true"></i>
-                </div>
-                Результат в формате<br>PDF
-              </div>
-              <div class="col text-center">
-                <div>
-                  <i class="fa fa-rocket text-primary" aria-hidden="true"></i>
-                </div>
-                Быстрая обработка запросов, круглосуточно 24/7
-              </div>
-              <div class="col text-center">
-                <div>
-                  <i class="fa fa-reply text-primary" aria-hidden="true"></i>
-                </div>
-                Возврат денег, если мы не сможем предоставить отчет
-              </div>
-            </footer>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="step.finish" class="finish">
-      <div class="title row">
-        <i class="fa fa-user-plus col-md-2" aria-hidden="true"></i>
-        <h4 class="col">Заказ проверки физического лица</h4>
-      </div>
-      <div class="body border rounded-bottom">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between">
-            <div>
-              <i class="fa fa-user text-primary" aria-hidden="true"></i>
-              <strong class="text-muted h5">Заказ принят в работу.</strong>
-              <div>
-                <strong class="text-muted h5">Результат проверки будет отправлен на ваш e-mail *{{email}}*</strong>
-              </div>
-            </div>
-          </div>
-          <div class="list-group-item">
-            <div class="fio">
-              <strong class="text-primary">{{surname}} {{name}} {{patronymic}}</strong>
-            </div>
-            <div class="data">
-              <i class="fa fa-address-card text-primary" aria-hidden="true"></i><strong>Данные</strong> 
-            </div>
-            <div v-show="passChecked" class="info row">
-              <div class="infoBlock col-md-6">
-                <div class="label">Паспорт</div>
-                <strong class="value">{{seriesAndNumber}}</strong>
-              </div>
-              <div class="infoBlock col-md-6">
-                <div class="label">Дата рождения</div>
-                <strong class="value">{{birthDate}}</strong>
-              </div>
-            </div>
-            <div class="info row">
-              <div class="infoBlock col-md-6">
-                <div class="label">Регион</div>
-                <strong class="value">{{region.region}}</strong>
-              </div>
-              <div class="infoBlock col-md-6">
-                <div class="label">ИНН</div>
-                <strong class="value">{{inn}}</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-address-book text-primary" aria-hidden="true"></i><strong>Действительность паспорта</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.passport == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.passport">
-                В базе недействительных паспортов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
-              </div>
-              <div class="infoText" v-else>
-                В базе недействительных паспортов: <strong class="text-danger">числится {{item.passportMessage}}</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-search text-primary" aria-hidden="true"></i><strong>Нахождение в розыске</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.mvdRf == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="!item.mvdRf">
-                В базе данных розыска: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
-              </div>
-              <div class="infoText" v-else>
-                В базе данных розыска: <strong class="text-danger">числится</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-university text-primary" aria-hidden="true"></i><strong>Федиральный реестр сведений о банкротстве</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.reestrBankrotov == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.reestrBankrotov > 0">
-                В реестре Банкротов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствует</strong>
-              </div>
-              <div class="infoText" v-else>
-                В реестре Банкротов: <strong class="text-danger">числится</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-credit-card text-primary" aria-hidden="true"></i><strong>Налоговые задолженности</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.taxes == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.taxes == 0 || !item.taxes">
-                Задолженности <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствуют</strong>
-              </div>
-              <div class="infoText" v-else-if="item.taxes > 0">
-                Найдено задолженностей: <strong class="text-danger">{{item.taxes}}</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-file text-primary" aria-hidden="true"></i><strong>Сведения о долгах у судебных приставов</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.fssp == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.fssp == 0">
-                В базе данных ФССП исполнительные производства <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числятся</strong>
-              </div>
-              <div class="infoText" v-else-if="item.fssp > 0">
-                Найдено записей об ИП: <strong class="text-danger">{{item.fssp}}</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-gavel text-primary" aria-hidden="true"></i><strong>Судебные акты Российской Федерации</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.judge == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.judge == 0">
-                В базе ГАС «Правосудие» совпадения по фамилии и инициалам<br> <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
-              </div>
-              <div class="infoText" v-else-if="item.judge > 0">
-                В базе ГАС «Правосудие» по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" <strong class="text-danger">найдено {{item.judge}} совпадений</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-gavel text-primary" aria-hidden="true"></i><strong>Арбитражные суды</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.arbitr == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.arbitr == 0">
-                В базе арбитражных судов по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" совпадения <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
-              </div>
-              <div class="infoText" v-else-if="item.arbitr > 0">
-                В базе арбитражных судов по фамилии и инициалам в субъекте РФ<br>"{{region.region}}" <strong class="text-danger">найдено {{item.arbitr}} совпадений</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-briefcase text-primary" aria-hidden="true"></i><strong>Самозанятый</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.npdStatus == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.npdStatus == false">
-                В реестре самозанятых <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
-              </div>
-              <div class="infoText" v-else-if="item.npdStatus">
-                В реестре самозанятых <strong class="text-danger">найден</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-user text-primary" aria-hidden="true"></i><strong>Руководитель или учредитель юридического лица</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.founder == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="item.founder == 0">
-                Среди руководителей и учредителей <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не значится</strong>
-              </div>
-              <div class="infoText" v-else-if="item.founder > 0">
-                Найдено задолженностей <strong class="text-danger">{{item.founder}}</strong>
-              </div>
-            </div>
-            <div class="infoBlock">
-              <div class="data d-flex justify-content-between">
-                <div>
-                  <i class="fa fa-exclamation-triangle text-primary" aria-hidden="true"></i><strong>Росфинмониторинг</strong>
-                </div>
-                <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
-              </div>
-              <div class="infoText text-muted" v-if="item.rosfinmonitoring == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
-              </div>
-              <div class="infoText" v-else-if="!item.rosfinmonitoring">
-                В перечне о причастности к экстремистской деятельности<br>или терроризму:<strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найден</strong>
-              </div>
-              <div class="infoText" v-else-if="item.rosfinmonitoring">
-                В перечне о причастности к экстремистской деятельности<br>или терроризму:<strong class="text-danger">найден</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <FillingForm v-if="step.fillingForm" @userInfo="userInfo" />
+
+    <Ordering v-if="step.ordering" @createOrder="payment" :userData="userData" :product="product" />
+    
+    <CardInfo v-if="step.CardInfo" :items="item" :userData="userData" :order="order" />
   </section>
 </template>
 
 <script>
   import Vue from 'vue'
-  import Politics from '@/components/Politics.vue';
-  import Offer from '@/components/Offer.vue';
+  import Top from '@/components/Top.vue'
+  import FillingForm from '@/components/FillingForm.vue'
+  import Ordering from '@/components/Ordering.vue'
+  import CardInfo from '@/components/CardInfo.vue'
   import axios from 'axios'
-  import {TheMask} from 'vue-the-mask'
-  import flatPickr from 'vue-flatpickr-component';
-  import 'flatpickr/dist/flatpickr.css';
-  import { required, maxLength, minLength, helpers } from 'vuelidate/lib/validators';
-  const checkRegion = (value) => {
-    return value != "Регион проживания"
-  }
 
   export default {
     components: {
-      Politics,
-      TheMask,
-      flatPickr,
-      Offer
+      Top,
+      FillingForm,
+      Ordering,
+      CardInfo
     },
     data() {
       return {
         step: {
           fillingForm: true,
-          // ordering: true
-          // finish: true
         },
-        regions: [
-          {
-            id: "22",
-            region: 'Алтайский край'
-          },
-          {
-            id: "28",
-            region: 'Амурская область'
-          },
-          {
-            id: "29",
-            region: 'Архангельская область'
-          },
-          {
-            id: "30",
-            region: 'Астраханская область'
-          },
-          {
-            id: "31",
-            region: 'Белгородская область'
-          },
-          {
-            id: "32",
-            region: 'Брянская область'
-          },
-          {
-            id: "33",
-            region: 'Владимирская область'
-          },
-          {
-            id: "34",
-            region: 'Волгоградская область'
-          },
-          {
-            id: "35",
-            region: 'Вологодская область'
-          },
-          {
-            id: "36",
-            region: 'Воронежская область'
-          },
-          {
-            id: "77",
-            region: 'г. Москва'
-          },
-          {
-            id: "79",
-            region: 'Еврейская автономная область'
-          },
-          {
-            id: "75",
-            region: 'Забайкальский край'
-          },
-          {
-            id: "37",
-            region: 'Ивановская область'
-          },
-          {
-            id: "38",
-            region: 'Иркутская область'
-          },
-          {
-            id: "7",
-            region: 'Кабардино-Балкарская Республика'
-          },
-          {
-            id: "39",
-            region: 'Калининградская область'
-          },
-          {
-            id: "40",
-            region: 'Калужская область'
-          },
-          {
-            id: "41",
-            region: 'Камчатский край'
-          },
-          {
-            id: "9",
-            region: 'Карачаево-Черкесская Республика'
-          },
-          {
-            id: "42",
-            region: 'Кемеровская область'
-          },
-          {
-            id: "43",
-            region: 'Кировская область'
-          },
-          {
-            id: "44",
-            region: 'Костромская область'
-          },
-          {
-            id: "23",
-            region: 'Краснодарский край'
-          },
-          {
-            id: "24",
-            region: 'Красноярский край'
-          },
-          {
-            id: "45",
-            region: 'Курганская область'
-          },
-          {
-            id: "46",
-            region: 'Курская область'
-          },
-          {
-            id: "47",
-            region: 'Ленинградская область'
-          },
-          {
-            id: "48",
-            region: 'Липецкая область'
-          },
-          {
-            id: "49",
-            region: 'Магаданская область'
-          },
-          {
-            id: "50",
-            region: 'Московская область'
-          },
-          {
-            id: "51",
-            region: 'Мурманская область'
-          },
-          {
-            id: "83",
-            region: 'Ненецкий автономный округ'
-          },
-          {
-            id: "52",
-            region: 'Нижегородская область'
-          },
-          {
-            id: "53",
-            region: 'Новгородская область'
-          },
-          {
-            id: "54",
-            region: 'Новосибирская область'
-          },
-          {
-            id: "55",
-            region: 'Омская область'
-          },
-          {
-            id: "56",
-            region: 'Оренбургская область'
-          },
-          {
-            id: "57",
-            region: 'Орловская область'
-          },
-          {
-            id: "58",
-            region: 'Пензенская область'
-          },
-          {
-            id: "59",
-            region: 'Пермский край'
-          },
-          {
-            id: "25",
-            region: 'Приморский край'
-          },
-          {
-            id: "60",
-            region: 'Псковская область'
-          },
-          {
-            id: "1",
-            region: 'Республика Адыгея (Адыгея)'
-          },
-          {
-            id: "4",
-            region: 'Республика Алтай'
-          },
-          {
-            id: "2",
-            region: 'Республика Башкортостан'
-          },
-          {
-            id: "3",
-            region: 'Республика Бурятия'
-          },
-          {
-            id: "5",
-            region: 'Республика Дагестан'
-          },
-          {
-            id: "6",
-            region: 'Республика Ингушетия'
-          },
-          {
-            id: "8",
-            region: 'Республика Калмыкия'
-          },
-          {
-            id: "10",
-            region: 'Республика Карелия'
-          },
-          {
-            id: "11",
-            region: 'Республика Коми'
-          },
-          {
-            id: "91",
-            region: 'Республика Крым'
-          },
-          {
-            id: "12",
-            region: 'Республика Марий Эл'
-          },
-          {
-            id: "13",
-            region: 'Республика Мордовия'
-          },
-          {
-            id: "14",
-            region: 'Республика Саха (Якутия)'
-          },
-          {
-            id: "15",
-            region: 'Республика Северная Осетия - Алания'
-          },
-          {
-            id: "16",
-            region: 'Республика Татарстан (Татарстан)'
-          },
-          {
-            id: "17",
-            region: 'Республика Тыва'
-          },
-          {
-            id: "19",
-            region: 'Республика Хакасия'
-          },
-          {
-            id: "61",
-            region: 'Ростовская область'
-          },
-          {
-            id: "62",
-            region: 'Рязанская область'
-          },
-          {
-            id: "63",
-            region: 'Самарская область'
-          },
-          {
-            id: "78",
-            region: 'Санкт-Петербург'
-          },
-          {
-            id: "64",
-            region: 'Саратовская область'
-          },
-          {
-            id: "65",
-            region: 'Сахалинская область'
-          },
-          {
-            id: "66",
-            region: 'Свердловская область'
-          },
-          {
-            id: "92",
-            region: 'Севастополь'
-          },
-          {
-            id: "67",
-            region: 'Смоленская область'
-          },
-          {
-            id: "26",
-            region: 'Ставропольский край'
-          },
-          {
-            id: "68",
-            region: 'Тамбовская область'
-          },
-          {
-            id: "69",
-            region: 'Тверская область'
-          },
-          {
-            id: "70",
-            region: 'Томская область'
-          },
-          {
-            id: "71",
-            region: 'Тульская область'
-          },
-          {
-            id: "72",
-            region: 'Тюменская область'
-          },
-          {
-            id: "18",
-            region: 'Удмуртская Республика'
-          },
-          {
-            id: "73",
-            region: 'Ульяновская область'
-          },
-          {
-            id: "27",
-            region: 'Хабаровский край'
-          },
-          {
-            id: "86",
-            region: 'Ханты-Мансийский автономный округ - Югра'
-          },
-          {
-            id: "74",
-            region: 'Челябинская область'
-          },
-          {
-            id: "20",
-            region: 'Чеченская Республика'
-          },
-          {
-            id: "21",
-            region: 'Чувашская Республика - Чувашия'
-          },
-          {
-            id: "87",
-            region: 'Чукотский автономный округ'
-          },
-          {
-            id: "89",
-            region: 'Ямало-Ненецкий автономный округ'
-          },
-          {
-            id: "76",
-            region: 'Ярославская область'
-          }
-        ],
-        errName: false,
-        isPoliticsVisible: false,
-        passChecked: false,
-        surname: null,
-        name: null,
-        patronymic: null,
-        birthDate: null,
-        birthDateFormat: null,
-        region: "Регион проживания",
-        seriesAndNumber: null,
-        issueDate: null,
-        issueDateFormat: null,
-        isAcceptCheck: false,
-        email: null,
-        emailErr: false,
+        userData: null,
         inn: null,
         product: '',
-        formDateConfig: {
-          dateFormat: "d.m.Y",
-          maxDate: new Date()
-        },
         order: {},
-        token: "",
         item: false,
-        upldateClientData: function() {
-          const token = this.token;
-          const orderItemsId = this.order.orderItemsId;
-          const seriesAndNumber = this.seriesAndNumber;
+      }
+    },
+    methods: {
+      userInfo(data) {
+        this.userData = data.user;
+        this.product = data.product;
 
-          axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
-            headers: {
-              'Authorization': 'Bearer ' + token
-              }
-            })
-              .then(response => {
-                let data = response.data.data.owners[0]
+        this.step = {
+          ordering: true
+        }
+      },
+      payment({order, email}) {
+        var widget = new cp.CloudPayments();
 
-                let item = {}
+        this.order = order;
+        this.userData.email = email;
+        const userData = this.userData;
 
-                if (seriesAndNumber) {
-                  if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
-                    item.passport = "process"
-                  else if (data.owner.passport) {
-                    if (data.owner.passport.valid.status) {
-                      item.passport = true;
-                    } else {
-                      item.passport = false;  
-                      item.passportMessage = data.owner.passport.valid.message;
-                    }
-                  } else {
-                    item.passport = false;
-                  }
-                }
+        let promise = new Promise(function(resolve, reject) {
+          widget.charge({ 
+            publicId: 'pk_5d2c1524cbcc49a9bb3e883524eca',
+            description: 'Проверка собственников',
+            amount: Number(order.total_amount),
+            currency: 'RUB',
+            invoiceId: order.id,
+            accountId: order.jwt.person.email,
+            skin: "mini",
+            data: {
+              userId: order.jwt.id
+            }
+          },
+          function(options) { // success
+            let userInfo = [{
+              order_item_id: order.orderItemsId,
+              first: userData.name,
+              surname: userData.surname,
+              ownerType: 1,
+              birthday: new Date(userData.birthDateFormat).toISOString(),
+              region: userData.region.id,
+            }];
 
-                if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
-                  item.mvdRf = "process"
-                else if (data.mvdRf.found)
-                  item.mvdRf = true;
+            if (userData.passChecked) {
+              userInfo[0].passport = userData.passport.number;
+            }
+            if (userData.patronymic)
+              userInfo[0].patronymic = userData.patronymic
 
-                if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
-                  item.reestrBankrotov = "process"
-                else if (Number(data.reestrBankrotov.totalCount) > 0)
-                  item.reestrBankrotov = true
-                else
-                  item.reestrBankrotov = false
+            axios.post('https://api-test.realtycloud.ru/risk/owner', JSON.stringify(userInfo))
+              .then((res) => {
 
-                if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
-                  item.taxes = "process"
-                else if (data.owner.taxes.totalCount)
-                  item.taxes = Number(data.owner.taxes.totalCount)
+                const token = order.jwt.token;
+                const orderItemsId = order.orderItemsId;
 
-                if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
-                  item.fssp = "process"
-                else if (data.fssp.totalCount)
-                  item.fssp = Number(data.fssp.totalCount)
-
-                if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
-                  item.judge = "process"
-                else if (data.judge.totalCount)
-                  item.judge = Number(data.judge.totalCount)
-
-                if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
-                  item.arbitr = "process"
-                else if (data.arbitr.totalCount)
-                  item.arbitr = Number(data.arbitr.totalCount)
-
-                if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
-                  item.npdStatus = "process"
-                else if (data.owner.npdStatus.status) 
-                  item.npdStatus = true;
-                else 
-                  item.npdStatus = false;
-
-                if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
-                  item.founder = "process"
-                else if (data.owner.founder.totalCount)
-                  item.founder = Number(data.owner.founder.totalCount)
-
-                if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
-                  item.rosfinmonitoring = "process"
-                else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
-                  item.rosfinmonitoring = true;
-                else 
-                  item.rosfinmonitoring = false;
-
-                this.item = item;
-              });
-
-          this.$nextTick(function () {
-            let promise = new Promise(function(resolve, reject) {
-              window.setInterval(function () {
                 axios.get(`https://api-test.realtycloud.ru/admin/risk/report/${orderItemsId}`, {
                   headers: {
                     'Authorization': 'Bearer ' + token
                     }
                   })
-                    .then(response => {
-                      let data = response.data.data.owners[0]
+                .then(response => {
+                  let data = response.data.data.owners[0]
 
-                      let item = {}
+                  let item = {}
+                  
+                  if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
+                    item.passport = "process"
+                  else if (data.owner.passport.valid.status == true) {
+                    item.passport = true;
+                  } else {
+                    item.passport = false;  
+                    item.passportMessage = data.owner.passport.valid.message;
+                  }
 
-                      if (seriesAndNumber) {
-                        if (data.owner.passport.valid.executionStatus == "in-progress" || data.owner.passport.valid.executionStatus == "error")
-                          item.passport = "process"
-                        else if (data.owner.passport) {
-                          if (data.owner.passport.valid.status) {
-                            item.passport = true;
-                          } else {
-                            item.passport = false;  
-                            item.passportMessage = data.owner.passport.valid.message;
-                          }
-                        } else {
-                          item.passport = false;
-                        }
-                      }
 
-                      if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
-                        item.mvdRf = "process"
-                      else if (data.mvdRf.found)
-                        item.mvdRf = true;
+                  if (data.mvdRf.executionStatus == "in-progress" || data.mvdRf.executionStatus == "error")
+                    item.mvdRf = "process"
+                  else if (data.mvdRf.found == true)
+                    item.mvdRf = false;
+                  else if (data.mvdRf.found == false)
+                    item.mvdRf = true;
 
-                      if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
-                        item.reestrBankrotov = "process"
-                      else if (Number(data.reestrBankrotov.totalCount) > 0)
-                        item.reestrBankrotov = true
-                      else
-                        item.reestrBankrotov = false
 
-                      if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
-                        item.taxes = "process"
-                      else if (data.owner.taxes.totalCount)
-                        item.taxes = Number(data.owner.taxes.totalCount)
+                  if (data.reestrBankrotov.executionStatus == "in-progress" || data.reestrBankrotov.executionStatus == "error")
+                    item.reestrBankrotov = "process"
+                  else if (data.reestrBankrotov.totalCount > 0)
+                    item.reestrBankrotov = true
+                  else (data.reestrBankrotov.totalCount == 0)
+                    item.reestrBankrotov = false
 
-                      if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
-                        item.fssp = "process"
-                      else if (data.fssp.totalCount)
-                        item.fssp = Number(data.fssp.totalCount)
+                  if (data.owner.taxes.executionStatus == "in-progress" || data.owner.taxes.executionStatus == "error")
+                    item.taxes = "process"
+                  else if (data.owner.taxes.totalCount)
+                    item.taxes = data.owner.taxes.totalCount
 
-                      if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
-                        item.judge = "process"
-                      else if (data.judge.totalCount)
-                        item.judge = Number(data.judge.totalCount)
+                  if (data.fssp.executionStatus == "in-progress" || data.fssp.executionStatus == "error")
+                    item.fssp = "process"
+                  else if (data.fssp.totalCount)
+                    item.fssp = data.fssp.totalCount
 
-                      if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
-                        item.arbitr = "process"
-                      else if (data.arbitr.totalCount)
-                        item.arbitr = Number(data.arbitr.totalCount)
+                  if (data.judge.executionStatus == "in-progress" || data.judge.executionStatus == "error")
+                    item.judge = "process"
+                  else if (data.judge.totalCount)
+                    item.judge = data.judge.totalCount
 
-                      if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
-                        item.npdStatus = "process"
-                      else if (data.owner.npdStatus.status) 
-                        item.npdStatus = true;
-                      else 
-                        item.npdStatus = false;
+                  if (data.arbitr.executionStatus == "in-progress" || data.arbitr.executionStatus == "error")
+                    item.arbitr = "process"
+                  else if (data.arbitr.totalCount)
+                    item.arbitr = data.arbitr.totalCount
 
-                      if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
-                        item.founder = "process"
-                      else if (data.owner.founder.totalCount)
-                        item.founder = Number(data.owner.founder.totalCount)
+                  if (data.owner.npdStatus.executionStatus == "in-progress" || data.owner.npdStatus.executionStatus == "error")
+                    item.npdStatus = "process"
+                  else if (data.owner.npdStatus.status == true) 
+                    item.npdStatus = false;
+                  else 
+                    item.npdStatus = true;
 
-                      if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
-                        item.rosfinmonitoring = "process"
-                      else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
-                        item.rosfinmonitoring = true;
-                      else 
-                        item.rosfinmonitoring = false;
+                  if (data.owner.founder.executionStatus == "in-progress" || data.owner.founder.executionStatus == "error")
+                    item.founder = "process"
+                  else if (data.owner.founder.totalCount)
+                    item.founder = data.owner.founder.totalCount
 
-                      resolve(item);
-                    });
-              },10000);
-            });
-
-            promise
-              .then(
-                result => {
-                  this.item = result;
-                  this.$forceUpdate()
-                },
-                error => {
-                  console.log(error)
-                }
-              );
-          })
-        }
-      }
-    },
-    validations() {
-      if (this.passChecked) {
-        return {
-          surname: {
-            required
-          },
-          name: {
-            required
-          },
-          birthDate: {
-            required
-          },
-          region: {
-            required,
-            checkRegion
-          },
-          seriesAndNumber: {
-            required,
-            minLength: minLength(12)
-          },
-          issueDate: {
-            required
-          },
-          isAcceptCheck: {
-            checked(val) {
-              return val;
-            }
-          }
-        }
-      } else {
-        return {
-          surname: {
-            required
-          },
-          name: {
-            required
-          },
-          birthDate: {
-            required
-          },
-          region: {
-            required,
-            checkRegion
-          },
-          isAcceptCheck: {
-            checked(val) {
-              return val;
-            }
-          }
-        }
-      }
-    },
-    methods: {
-      showPolitics() {
-        this.$modal.show(
-          Politics, {}, {
-            height: '760px'
-        })
-      },
-      showOffer() {
-        this.$modal.show(
-          Offer, {}, {
-            height: '760px'
-        })
-      },
-      submitFillingForm() {
-        if (this.$v.$invalid) {
-          this.$v.$touch()
-          return
-        }
-
-        const birthDate = this.birthDate.split('.')
-        this.birthDateFormat = birthDate[2] + "-" + birthDate[1] + "-" + birthDate[0]
-
-        if (this.passChecked) {
-          const issueDate = this.issueDate.split('.')
-          this.issueDateFormat = issueDate[2] + "-" + issueDate[1] + "-" + issueDate[0]
-        }
-
-        axios
-          .get('https://api-test.realtycloud.ru/products')
-          .then(response => {
-            let data = response.data.data
-
-            for (let i = 0; i < data.length; i++) {
-              if (data[i].product_name == "CheckOwner")
-                {
-                  this.product = data[i]
-                }
-            }
-          });
-
-        this.step = {ordering: true}
-      },
-      addOrdering() {
-        if (!this.email) {
-          this.emailErr = true;
-          return
-        } else this.emailErr = false;
-
-        let request = JSON.stringify({
-          email: this.email,
-          order_items: [
-            {
-              product_id: this.product.product_id,
-              object_key: "n/a"
-            }
-          ]
-        })
-
-        axios.post('https://api-test.realtycloud.ru/regorder', request)
-          .then((response) => {
-            const data = response.data.data
-
-            this.order = {
-              id: data.order.id,
-              total_amount: data.order.total_amount,
-              orderItemsId: data.order.order_items[0].order_item_id,
-              jwt: response.data.jwt
-            }
-
-            this.token = response.data.jwt.token;
-
-            const order = this.order;
-
-            var widget = new cp.CloudPayments();
-
-            let promise = new Promise(function(resolve, reject) {
-              widget.charge({ 
-                publicId: 'pk_5d2c1524cbcc49a9bb3e883524eca',
-                description: 'Проверка собственников',
-                amount: Number(order.total_amount),
-                currency: 'RUB',
-                invoiceId: order.id,
-                accountId: order.jwt.person.email,
-                skin: "mini",
-                data: {
-                  userId: order.jwt.id
-                }
-              },
-              function(options) { // success
-                resolve({finish: true})
-              },
-              function (reason, options) { // fail
-                resolve(false)
+                  if (data.rosfinmonitoring.executionStatus == "in-progress" || data.rosfinmonitoring.executionStatus == "error")
+                    item.rosfinmonitoring = "process"
+                  else if (data.rosfinmonitoring.isFoundInExtremismOrTerroristList) 
+                    item.rosfinmonitoring = false;
+                  else 
+                    item.rosfinmonitoring = true; 
+                  
+                  resolve(item)
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                return
               });
-            });
-
-            promise
-              .then(
-                result => {
-                  const userInfo = [{
-                    order_item_id: this.order.orderItemsId,
-                    first: this.name,
-                    surname: this.surname,
-                    ownerType: 1,
-                    birthday: new Date(this.birthDateFormat).toISOString(),
-                    region: this.region.id,
-                  }];
-
-                  if (this.seriesAndNumber)
-                      userInfo[0].passport = this.seriesAndNumber;
-                  if (this.patronymic)
-                    userInfo[0].patronymic = this.patronymic
-
-                  axios.post('https://api-test.realtycloud.ru/risk/owner', JSON.stringify(userInfo))
-                    .then((res) => {
-                      this.step = result;
-                      this.upldateClientData()
-                      return
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      return
-                    });
-                  return
-                },
-                error => {
-                  console.log(error)
-                }
-              );
-          })
-          .catch((error) => {
-            console.log(error);
+          },
+          function (reason, options) { // fail
+            resolve(false)
           });
+        });
+
+        promise
+          .then(
+            result => {
+              if (result) {
+                this.item = result;
+                this.step = {CardInfo: true};
+              }
+          });   
+        }  
       }
     }
-  }
 </script>
 
-<style lang="scss" scoped>
-  .btn-primary {
-    background-color: #409eff;
-    border-color: #409eff;
-  }
-  .text-primary {
-    color: #409eff;
-  }
-  button {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .inputDate {
-    .form-control:disabled, .form-control[readonly] {
-      background-color: #fff !important;
-    }
-  }
-  .inputErr {
-    color: #ff4949;
-    font-size: 12px;
-    position: absolute;
-  }
-  .title {
-    color: #fff;
-    font-weight: 7 00;
-    background-color: #293fcc;
-    margin: 0px;
-    padding: 15px 0px;
-    i {
-      font-size: 54px;
-    }
-    h4 {
-      padding-top: 10px;
-    }
-  }
-  .fillingForm {
-    width: 360px;
-    background-color: #293fcc;
-    margin: 0 auto;
-    h4 {
-      padding-top: 0px;
-    }
-    form {
-      padding: 15px;
-      label, a {  
-        color: #fff;
-      }
-      a {
-        text-decoration: underline;
-        &:hover {
-          text-decoration: none;
-        }
-      }
-      .margin { 
-        margin-bottom: 26px;
-        span {   
-          background-color: #fff;
-          border: 1px solid #ced4da;
-          border-radius: .25rem;
-          border-left: none;
-          color: #90969b;
-        }
-        small {
-          position: absolute;
-        }
-      }
-      .inputIcon {
-        border-right: none;
-      }
-    }
-  }
-  section {
-    // font-family: 'Open Sans', sans-serif;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    font-weight: 400;
-  }
-  .acceptCheck {
-    margin-top: 35px;
-  }
-  .fa-user {
-    margin-right: 12px;
-  }
-  .info {
-    margin-bottom: 7px;
-    margin-left: 15px;
-  }
-  .infoBlock {
-    margin-bottom: 14px;
-    img {
-      margin-left: 7px;
-    }
-    .data {
-      i {
-        font-size: 15px;
-        width: 14px;
-      }
-    }
-    .infoText {
-      padding-left: 30px;
-    }
-    .label {
-      color: #6c757d;
-      font-size: 14px;
-    }
-    strong {
-      i {
-        font-size: 13px;
-      }
-    }
-  }
-  .ordering {
-    width: 615px;
-    margin: 0 auto;
-    .body {
-      padding: 6px;
-    }
-    .card-header {
-      border-bottom: none;
-      strong {
-        font-size: 15px;
-      }
-    }
-    .list-group-item {
-      border-top: none;
-    }
-    .fio {
-      margin-bottom: 10px;
-      i {
-        margin-right: 12px;
-      }
-    }
-    .mail {
-      margin-top: 30px;
-      font-weight: 500;
-      div {
-        margin-top: 22px;
-      }
-      i {
-        margin-left: 6px;
-      }
-    } 
-    footer {
-      color: #6c757d;
-      font-size: 13px;
-      margin-top: 40px;
-      i {
-        font-size: 24px;
-        margin-bottom: 10px;
-      }
-    }
-  }
-  .finish {
-    width: 680px;
-    margin: 0 auto;
-    .body {
-      padding: 6px;
-    }
-    .data {
-      i {
-        margin-right: 16px;
-      }
-      .fa-info-circle {
-        font-size: 13px;
-      }
-    }
-    .fio {
-      margin-left: 18px;
-      margin-bottom: 9px;
-    }
-  }
-</style>
