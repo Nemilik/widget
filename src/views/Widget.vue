@@ -1,10 +1,13 @@
 <template>
-  <section>
+  <section class="widget">
     <FillingForm v-if="step.fillingForm" @userInfo="userInfo" />
 
     <Ordering v-if="step.ordering" @createOrder="payment" :userData="userData" :product="product" />
     
     <CardInfo v-if="step.CardInfo" :items="item" :userData="userData" :order="order" />
+
+    <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
+    <!-- <router-view /> -->
   </section>
 </template>
 
@@ -15,6 +18,13 @@
   import Ordering from '@/components/Ordering.vue'
   import CardInfo from '@/components/CardInfo.vue'
   import axios from 'axios'
+  import Geometria from'../assets/fonts/Geometria.ttf'
+
+  // document.head.appendChild('https://widget.cloudpayments.ru/bundles/cloudpayments')
+
+  var script = document.createElement('script');
+  script.src = 'https://widget.cloudpayments.ru/bundles/cloudpayments';
+  document.getElementsByTagName('head')[0].appendChild(script);
 
   export default {
     components: {
@@ -186,3 +196,13 @@
     }
 </script>
 
+<style lang="scss" scoped>
+  @font-face {
+    font-family: 'Geometria'; 
+    src: url('../assets/fonts/Geometria.ttf'); 
+    // src: url('~@/assets/fonts/Geometria.ttf') format('ttf');
+   }
+  .widget {
+    font-family: 'Geometria';
+  }
+</style>

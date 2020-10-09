@@ -336,8 +336,10 @@
 
 <style lang="scss" scoped>
   .btn-primary {
-    background-color: #409eff;
-    border-color: #409eff;
+    background-color: #2281f9;
+    border-color: #2281f9;
+    padding: .657rem 1.65rem;
+    border-radius: .375rem;
   }
   .text-primary {
     color: #2281f9 !important;

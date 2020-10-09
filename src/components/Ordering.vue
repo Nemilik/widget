@@ -137,6 +137,28 @@
   .ordering {
     width: 615px;
     margin: 0 auto;
+    .form-control {
+      height: 50px;
+      background-color: #f8f9fa;
+      padding: .5625rem 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: .375rem;
+      display: block;
+      color: #24292e;
+      background-clip: padding-box;
+      border: 1px solid #d1d5da;
+    }
+    .btn-primary {
+      background-color: #2281f9;
+      border-color: #2281f9;
+      font-weight: 700;
+      height: 50px;
+      font-size: .875rem;
+      text-transform: uppercase;
+      padding: .657rem 1.65rem;
+      border-radius: .375rem;
+    }
     .body {
       padding: 6px;
     }

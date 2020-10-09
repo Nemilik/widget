@@ -97,7 +97,7 @@
             <small v-if="$v.isAcceptCheck.$dirty && $v.isAcceptCheck.$error" class="text-danger">Чтобы продолжить, установите этот флажок</small>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary form-control">НАЧАТЬ ПРОВЕРКУ</button>
+        <button type="submit" class="btn btn-primary">НАЧАТЬ ПРОВЕРКУ</button>
       </form>
     </div>
   </section>
@@ -607,17 +607,45 @@
 </script>
 
 <style lang="scss" scoped>
-  .btn-primary {
-    background-color: #409eff;
-    border-color: #409eff;
-  }
-  .text-primary {
-    color: #409eff
-  }
-  section {
-    width: 360px;
+  .fillingForm {
+    font-family: 'Geometria';
+    font-weight: 600;
+    width: 380px;
     background-color: #293fcc;
     margin: 0 auto;
+    .btn-primary {
+      background-color: #2281f9;
+      border-color: #2281f9;
+      width: 100%;
+      font-weight: 700;
+      height: 50px;
+      font-size: .875rem;
+      text-transform: uppercase;
+      border-radius: .375rem;
+      padding: .657rem 1.65rem;
+    }
+    .text-primary {
+      color: #2281f9
+    }
+    .form-control {
+      height: 50px;
+      background-color: #f8f9fa;
+      padding: .5625rem 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: .375rem;
+      display: block;
+      color: #24292e;
+      background-clip: padding-box;
+      border: 1px solid #d1d5da;
+    }
+    .input-group-prepend {
+      height: 50px;
+      background-color: #f8f9fa;
+      border-radius: .375rem;
+      color: #24292e;
+      background-clip: padding-box;
+    }
     h4 {
       padding-top: 0px;
     }

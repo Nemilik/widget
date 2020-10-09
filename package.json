@@ -8,17 +8,21 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "base64-inline-loader": "^1.1.1",
     "bootstrap": "^4.5.2",
     "core-js": "^3.6.5",
+    "document-register-element": "^1.14.10",
     "flatpickr": "^4.6.6",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
+    "vue-custom-element": "^3.2.14",
     "vue-flatpickr-component": "^8.1.6",
     "vue-js-modal": "^2.0.0-rc.6",
     "vue-router": "^3.2.0",
     "vue-the-mask": "^0.11.1",
     "vue-tippy": "^4.7.0",
-    "vuelidate": "^0.7.5"
+    "vuelidate": "^0.7.5",
+    "webpack": "^4.44.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

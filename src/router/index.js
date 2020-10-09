@@ -7,10 +7,6 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: Home
-  },
-  {
-    path: '/widget',
     component: () => import('../views/Widget.vue')
   }
 ]
