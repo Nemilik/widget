@@ -609,7 +609,7 @@
 <style lang="scss" scoped>
   .fillingForm {
     font-family: 'Geometria';
-    font-weight: 600;
+    font-weight: 500;
     width: 380px;
     background-color: #293fcc;
     margin: 0 auto;

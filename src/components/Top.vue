@@ -1,9 +1,16 @@
 <template>
-  <section class="top">
-    <div class="title d-flex justify-content-start">
-      <i class="fa fa-user-plus" aria-hidden="true"></i>
-      <div :class="{pd9: pd9}">
-        <h4>{{title}}</h4>
+  <section class="top" :class="{br3: br3}">
+    <div class="title d-flexW justify-content-start" :class="{br3: br3}">
+      <div class="d-flex">
+        <i class="fa fa-user-plus" aria-hidden="true"></i>
+        <div :class="{pd9: pd9}">
+          <h4>{{title}}</h4>
+        </div>
+      </div>
+      <div>
+        <a href="#" @click="closeModal">
+          <i v-if="pd9" class="fa fa-times exit" aria-hidden="true"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -14,8 +21,15 @@ export default {
   name: 'Top',
   props: [
     'title',
-    'pd9'
-  ]
+    'pd9',
+    'br3'
+  ],
+  methods: {
+    closeModal() {
+      console.log(1)
+      this.$emit('closeModal')
+    }
+  }
 }
 </script>
 
@@ -25,6 +39,24 @@ export default {
       font-family: 'Geometria-Bold'; 
       src: url('~@/assets/fonts/Geometria-Bold.ttf'); 
       font-weight: bold;
+    }
+    .br3 {
+        border-radius: .375rem .375rem 0rem 0rem;
+      }
+    .d-flexW {
+      display: flex;
+      justify-content: space-between!important;
+      a {
+        color: #fff;
+        &:hover {
+          color: #8a8a8a;
+        }
+      }
+      .exit  {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 16px 0px;
+      }
     }
     .title {
       font-family: 'Geometria';

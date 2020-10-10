@@ -1,16 +1,16 @@
 <template>
   <section>
     <div class="CardInfo">
-      <Top :title="'Заказ проверки физического лица'" :pd9="true" />
+      <Top :title="'Заказ проверки физического лица'" @closeModal="closeModal" :pd9="true" :br3="true"/>
       <div class="body border rounded-bottom">
         <div class="card">
-          <div class="card-header d-flex justify-content-between">
+          <div class="card-header justify-content-between">
             <div>
               <i class="fa fa-user text-primary" aria-hidden="true"></i>
               <strong class="text-muted">Заказ принят в работу.</strong>
-              <div>
-                <strong class="text-muted">Результат проверки будет отправлен на ваш e-mail *{{userData.email}}*</strong>
-              </div>
+            </div>
+            <div>
+              <strong class="text-muted">Результат проверки будет отправлен на ваш e-mail *{{userData.email}}*</strong>
             </div>
           </div>
           <div class="list-group-item">
@@ -48,7 +48,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.passport == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.passport">
                 В базе недействительных паспортов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
@@ -65,7 +65,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.mvdRf == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="!item.mvdRf">
                 В базе данных розыска: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числится</strong>
@@ -82,7 +82,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.reestrBankrotov == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.reestrBankrotov > 0">
                 В реестре Банкротов: <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствует</strong>
@@ -99,7 +99,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.taxes == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.taxes == 0 || !item.taxes">
                 Задолженности <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> отсутствуют</strong>
@@ -116,7 +116,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.fssp == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.fssp == 0">
                 В базе данных ФССП исполнительные производства <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не числятся</strong>
@@ -133,7 +133,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.judge == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.judge == 0">
                 В базе ГАС «Правосудие» совпадения по фамилии и инициалам<br> <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
@@ -150,7 +150,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.arbitr == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.arbitr == 0">
                 В базе арбитражных судов по фамилии и инициалам в субъекте РФ<br>"{{userData.region.region}}" совпадения <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
@@ -167,7 +167,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.npdStatus == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.npdStatus == false">
                 В реестре самозанятых <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найдены</strong>
@@ -184,7 +184,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.founder == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="item.founder == 0">
                 Среди руководителей и учредителей <strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не значится</strong>
@@ -201,7 +201,7 @@
                 <i class="fa fa-info-circle text-muted" aria-hidden="true"></i>
               </div>
               <div class="infoText text-muted" v-if="item.rosfinmonitoring == 'process'">
-                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.gif" width="14"></strong>
+                Проверка в данный момент находится <strong>в работе<img src="@/assets/icons/loading.svg" width="14"></strong>
               </div>
               <div class="infoText" v-else-if="!item.rosfinmonitoring">
                 В перечне о причастности к экстремистской деятельности<br>или терроризму:<strong class="text-success"><i class="fa fa-check-circle" aria-hidden="true"></i> не найден</strong>
@@ -243,6 +243,9 @@
       })
     },
     methods: {
+      closeModal() {
+        this.$emit('closeModal')
+      },
       upldateClientData() {
         const token = this.order.jwt.token;
         const orderItemsId = this.order.orderItemsId;
@@ -335,61 +338,69 @@
 </script>
 
 <style lang="scss" scoped>
-  .btn-primary {
-    background-color: #2281f9;
-    border-color: #2281f9;
-    padding: .657rem 1.65rem;
-    border-radius: .375rem;
-  }
-  .text-primary {
-    color: #2281f9 !important;
-  }
-  button {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .inputDate {
-    .form-control:disabled, .form-control[readonly] {
-      background-color: #fff !important;
-    }
-  }
-  .fa-user {
-    margin-right: 12px;
-  }
-  .info {
-    margin-left: 19px;
-  }
-  .infoBlock {
-    margin-bottom: 14px;
-    img {
-      margin-left: 7px;
-    }
-    .data {
-      i {
-        font-size: 15px;
-        width: 14px;
-      }
-    }
-    .infoText {
-      padding-left: 30px;
-    }
-    .label {
-      color: #6c757d;
-      font-size: 14px;
-    }
-    strong {
-      i {
-        font-size: 13px;
-      }
-    }
-  }
   .CardInfo {
     width: 720px;
     margin: 0 auto;
     font-weight: 400;
-    font-family: Geometria,sans-serif;
+    font-family: 'Geometria-Medium';
+    .btn-primary {
+      background-color: #2281f9;
+      border-color: #2281f9;
+      padding: .657rem 1.65rem;
+      border-radius: .375rem;
+    }
+    .text-primary {
+      color: #2281f9 !important;
+    }
+    button {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .inputDate {
+      .form-control:disabled, .form-control[readonly] {
+        background-color: #fff !important;
+      }
+    }
+    .fa-user {
+      margin-right: 12px;
+    }
+    .info {
+      margin-left: 19px;
+    }
+    .infoBlock {
+      margin-bottom: 14px;
+      .text-success {
+        font-weight: 900;
+      }
+      .label {
+        font-size: 15px;
+        color: #6a737d;
+      }
+      img {
+        margin-left: 7px;
+      }
+      .data {
+        i {
+          font-size: 15px;
+          width: 14px;
+        }
+      }
+      .infoText {
+        padding-left: 30px;
+      }
+      .label {
+        color: #6c757d;
+        font-size: 14px;
+      }
+      strong {
+        i {
+          font-size: 13px;
+        }
+      }
+    }
     .card-header {
       font-size: 18px;
+      line-height: 1.3;
       div {
         div {
           margin-left: 27px;

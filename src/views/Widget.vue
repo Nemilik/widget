@@ -1,10 +1,20 @@
 <template>
   <section class="widget">
-    <FillingForm v-if="step.fillingForm" @userInfo="userInfo" />
+    <FillingForm @userInfo="userInfo" />
 
-    <Ordering v-if="step.ordering" @createOrder="payment" :userData="userData" :product="product" />
-    
-    <CardInfo v-if="step.CardInfo" :items="item" :userData="userData" :order="order" />
+    <transition name="modal">
+      <div class="modal" v-if="isModal" @click.self="closeModal">
+        <transition name="modal-body">
+          <div class="modal-body">
+            <Ordering v-if="step.ordering" @closeModal="closeModal" @createOrder="payment" :userData="userData" :product="product" />
+            
+            <CardInfo v-if="step.CardInfo" @closeModal="closeModal" :items="item" :userData="userData" :order="order" />
+          </div>
+        </transition>
+      </div>
+    </transition>
+
+    <!-- <Modal v-if="isOrdering" /> -->
 
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
     <!-- <router-view /> -->
@@ -31,7 +41,7 @@
       Top,
       FillingForm,
       Ordering,
-      CardInfo
+      CardInfo,
     },
     data() {
       return {
@@ -43,13 +53,18 @@
         product: '',
         order: {},
         item: false,
+        isModal: false
       }
     },
     methods: {
+      closeModal() {
+        this.isModal = false;
+      },
       userInfo(data) {
         this.userData = data.user;
         this.product = data.product;
 
+        this.isModal = true
         this.step = {
           ordering: true
         }
@@ -199,10 +214,67 @@
 <style lang="scss" scoped>
   @font-face {
     font-family: 'Geometria'; 
-    src: url('../assets/fonts/Geometria.ttf'); 
-    // src: url('~@/assets/fonts/Geometria.ttf') format('ttf');
+    src: url("../assets/fonts/Geometria.eot"); 
+    src: url("../assets/fonts/Geometria.eot?#iefix") format("embedded-opentype"),
+    url("../assets/fonts/Geometria.woff") format("woff"), 
+    url('../assets/fonts/Geometria.ttf') format("truetype"),
+   }
+   @font-face {
+    font-family: 'Geometria-Medium'; 
+    src: url("../assets/fonts/Geometria-Medium.eot"); 
+    src: url("../assets/fonts/Geometria-Medium.eot?#iefix") format("embedded-opentype"),
+    url("../assets/fonts/Geometria-Medium.woff") format("woff"), 
+    url('../assets/fonts/Geometria-Medium.ttf') format("truetype"),
    }
   .widget {
     font-family: 'Geometria';
+    // .modal-enter-active {
+    //   transition: all .3s ease;
+    // }
+    // .modal-leave-active {
+    //   transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    // }
+    // .modal-enter, .slide-fade-leave-to {
+    //   transform: translateX(10px);
+    //   opacity: 0;
+    // }
+    .modal {
+      &-enter-active, &-leave-active {
+        transition: opacity .4s;
+      }
+      &-enter, &-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+        opacity: 0;
+      }
+      overflow-y: auto;
+      padding: 5rem !important;
+      position: fixed;
+      padding: 0px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1300;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      background: rgba(0,0,0,.5);
+      -webkit-transition: background .3s ease;
+      transition: background .3s ease;
+      .modal-body {
+        flex: none;
+        border-radius: .375rem;
+        margin-top: auto;
+        margin-bottom: auto;
+        max-width: 800px;
+        padding: 0px;
+        background: #fff;
+        box-shadow: 0 2rem 4rem rgba(0,0,0,.4);
+      }
+    }
   }
 </style>

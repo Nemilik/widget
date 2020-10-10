@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="ordering">
-      <Top :title="'Заказ проверки физического лица'" :pd9="true" />
+      <Top :title="'Заказ проверки физического лица'" @closeModal="closeModal" :pd9="true" :br3="true" />
       <div class="body border rounded-bottom">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
@@ -42,7 +42,7 @@
             </div>
             <div class="mail" @submit.prevent="addOrdering()">
               <form>
-                <label for="email">Рузультат проверки будет отправлен вам на E-mail в течении 10 минут<i class="fa fa-info-circle"
+                <label for="email">Результат проверки будет отправлен вам на E-mail в течении 10 минут<i class="fa fa-info-circle"
                   aria-hidden="true"
                   title="Отчет формируется за 10 минут, но иногда проверка может осуществляться в течение 1 рабочего дня" 
                   v-tippy="{ arrow: true, size: 'small' }"></i></label>
@@ -101,6 +101,10 @@
       'product'
     ],
     methods: {
+      closeModal() {
+        console.log(2)
+        this.$emit('closeModal')
+      },
       addOrdering() {
         let request = JSON.stringify({
           email: this.userData.email,
@@ -137,6 +141,8 @@
   .ordering {
     width: 615px;
     margin: 0 auto;
+    font-weight: 500;
+    font-family: 'Geometria-Medium';
     .form-control {
       height: 50px;
       background-color: #f8f9fa;
@@ -152,7 +158,7 @@
     .btn-primary {
       background-color: #2281f9;
       border-color: #2281f9;
-      font-weight: 700;
+      font-weight: 500;
       height: 50px;
       font-size: .875rem;
       text-transform: uppercase;
@@ -183,20 +189,34 @@
     .info {
       margin-left: 18px;
     }
+    .infoBlock {
+      .label {
+        font-size: 15px;
+        color: #6a737d;
+      }
+    }
     .mail {
       margin-top: 30px;
       font-weight: 500;
+      label {
+        font-weight: 100;
+        font-size: 15px;
+      }
       div {
         margin-top: 22px;
       }
       i {
         margin-left: 6px;
+        font-size: 16px;
       }
     } 
     footer {
       color: #6c757d;
       font-size: 13px;
       margin-top: 40px;
+      font-family: 'Geometria';
+      line-height: 1.2;
+      font-weight: 100;
       i {
         font-size: 24px;
         margin-bottom: 10px;

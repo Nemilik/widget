@@ -29,9 +29,3 @@ Vue.use(vueTippy)
 Widget.router = router
 
 Vue.customElement('vue-widget', Widget)
-
-// new Vue({
-//   router,
-//   render: h => h(App)
-// }).$mount('#app')
-
