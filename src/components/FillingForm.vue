@@ -34,6 +34,7 @@
             :class="{'border-danger': $v.birthDate.$dirty && !$v.birthDate.required}"
             :config="formDateConfig" 
             v-model="birthDate" 
+            v-mask="'##.##.####'"
             placeholder="Дата рождения" 
             class="form-control"></flat-pickr>
           <small v-if="$v.birthDate.$dirty && !$v.birthDate.required" class="text-danger">Ообязательное поле</small>
@@ -78,6 +79,7 @@
                 :class="{'border-danger': $v.issueDate.$dirty && !$v.issueDate.required}"
                 :config="formDateConfig" 
                 v-model="issueDate" 
+                v-mask="'##.##.####'"
                 placeholder="Дата выдачи" 
                 class="form-control inputIcon"></flat-pickr>
               <div class="input-group-prepend">
@@ -110,9 +112,12 @@
   import Offer from '@/components/modal/Offer.vue';
   import axios from 'axios'
   import flatPickr from 'vue-flatpickr-component';
+  import { Russian } from "flatpickr/dist/l10n/ru.js";
   import 'flatpickr/dist/flatpickr.css';
   import {TheMask} from 'vue-the-mask'
   import { required, maxLength, minLength, helpers } from 'vuelidate/lib/validators';
+
+  flatpickr.localize(Russian);
   
   const checkRegion = (value) => {
     return value != "Регион проживания"
@@ -483,7 +488,13 @@
         isAcceptCheck: false,
         formDateConfig: {
           dateFormat: "d.m.Y",
-          maxDate: new Date()
+          maxDate: new Date(),
+          wrap: true,
+          parseDate: (datestr, format) => {
+            return moment(datestr, format, true).toDate();
+          },
+          allowInput: true,
+          disableMobile: "true"
         },
         product: null
       }
