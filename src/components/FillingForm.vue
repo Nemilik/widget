@@ -116,6 +116,7 @@
   import 'flatpickr/dist/flatpickr.css';
   import {TheMask} from 'vue-the-mask'
   import { required, maxLength, minLength, helpers } from 'vuelidate/lib/validators';
+  import moment from 'moment';
 
   flatpickr.localize(Russian);
   
@@ -490,9 +491,6 @@
           dateFormat: "d.m.Y",
           maxDate: new Date(),
           wrap: true,
-          parseDate: (datestr, format) => {
-            return moment(datestr, format, true).toDate();
-          },
           allowInput: true,
           disableMobile: "true"
         },
@@ -555,13 +553,13 @@
       showPolitics() {
         this.$modal.show(
           Politics, {}, {
-            height: '760px'
+            height: '80%'
         })
       },
       showOffer() {
         this.$modal.show(
           Offer, {}, {
-            height: '760px'
+            height: '80%'
         })
       },
       submitFillingForm() {
@@ -621,7 +619,7 @@
   .fillingForm {
     font-family: 'Geometria';
     font-weight: 500;
-    width: 380px;
+    max-width: 380px;
     background-color: #293fcc;
     margin: 0 auto;
     .btn-primary {

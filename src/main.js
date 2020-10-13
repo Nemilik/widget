@@ -17,8 +17,7 @@ Vue.config.productionTip = false
 Vue.use(vueCustomElement)
 Vue.use(VModal, {
   dynamicDefaults: {
-    draggable: true,
-    resizable: true
+    adaptive: true
   }
 })
 Vue.use(VueTheMask)

@@ -102,7 +102,6 @@
     ],
     methods: {
       closeModal() {
-        console.log(2)
         this.$emit('closeModal')
       },
       addOrdering() {
@@ -139,7 +138,7 @@
 
 <style lang="scss" scoped>
   .ordering {
-    width: 615px;
+    max-width: 615px;
     margin: 0 auto;
     font-weight: 500;
     font-family: 'Geometria-Medium';

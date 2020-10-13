@@ -339,7 +339,7 @@
 
 <style lang="scss" scoped>
   .CardInfo {
-    width: 720px;
+    max-width: 720px;
     margin: 0 auto;
     font-weight: 400;
     font-family: 'Geometria-Medium';
